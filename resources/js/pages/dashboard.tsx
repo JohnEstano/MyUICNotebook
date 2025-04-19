@@ -87,7 +87,7 @@ export default function Dashboard() {
                                         {note.content}
                                     </p>
                                 </div>
-
+                                        
 
                                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary" />

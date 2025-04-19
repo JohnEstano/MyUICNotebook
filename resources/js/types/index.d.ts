@@ -43,9 +43,9 @@ type ResponseWithAttachment = {
 export type Notebook = {
   id: number;
   title: string;
-  description: string;       // Add this
-  color: string;             // Add this
-  is_public: boolean;        // Add this
+  description: string;      
+  color: string;            
+  is_public: boolean;        
   creator: User;
   users: User[];
   notes: Note[];
