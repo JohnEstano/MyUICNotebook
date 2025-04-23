@@ -17,6 +17,13 @@ MyUIC Notebook is a web-based application that allows users to create, organize,
 ## Screenshots
 
 ![Dashboard](./images/2.png)
+![Dashboard](./images/3.png)
+![Dashboard](./images/4.png)
+![Dashboard](./images/6.png)
+![Dashboard](./images/7.png)
+
+Share Notebook
+![Share](./images/5.png)
 
 ## Tech Stack
 
