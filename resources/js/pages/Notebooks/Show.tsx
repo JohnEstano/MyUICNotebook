@@ -201,7 +201,7 @@ const Show = () => {
             <h1 className="text-3xl font-bold mb-4 md:mb-0" >{notebook.title}</h1>
             <div className="flex items-center gap-3 mt-1 text-sm text-gray-500">
               <span>
-                By {notebook.creator.name} &middot; {new Date().toLocaleDateString()}
+                Notebook Created by: {notebook.creator.name} &middot; {new Date().toLocaleDateString()}
               </span>
               <div className="flex items-center -space-x-2">
                 {notebook.users.slice(0, 5).map((user, index) => (

@@ -4,7 +4,7 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { type BreadcrumbItem } from '@/types';
 import { type PropsWithChildren } from 'react';
-import { Toaster } from 'sonner'; // ✅ Import Toaster from sonner
+import { Toaster } from 'sonner'; 
 
 export default function AppSidebarLayout({
     children,
@@ -18,7 +18,7 @@ export default function AppSidebarLayout({
                 {children}
             </AppContent>
 
-            {/* ✅ Include Toaster once near root */}
+        
             <Toaster position="top-right" richColors />
         </AppShell>
     );

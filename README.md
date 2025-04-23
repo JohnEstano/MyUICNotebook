@@ -24,7 +24,7 @@ MyUIC Notebook is a web-based application that allows users to create, organize,
 - **Backend**: Laravel 12
 - **Authentication**: Inertia.js
 - **Database**: MySQL
-- **Deployment**: This thing isn't deployed yet
+- **Deployment**: Laravel Cloud
 
 ## Installation
 

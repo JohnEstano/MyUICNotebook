@@ -57,29 +57,7 @@ export default function Welcome() {
                                         Write, organize, and share with ease.
                                     </p>
 
-                                    <ul className="space-y-6">
-                                        <li className="flex items-start gap-4">
-                                            <NotebookPen className="h-7 w-7 text-yellow-500 dark:text-yellow-300" />
-                                            <div>
-                                                <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">Note Editor</h2>
-                                                <p className="text-sm text-muted-foreground">Image uploads and clean UI.</p>
-                                            </div>
-                                        </li>
-                                        <li className="flex items-start gap-4">
-                                            <Share2 className="h-7 w-7 text-blue-600 dark:text-blue-400" />
-                                            <div>
-                                                <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">Share</h2>
-                                                <p className="text-sm text-muted-foreground">Easily share your notebooks.</p>
-                                            </div>
-                                        </li>
-                                        <li className="flex items-start gap-4">
-                                            <UsersRound className="h-7 w-7 text-rose-600 dark:text-rose-400" />
-                                            <div>
-                                                <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">Personal or Academic</h2>
-                                                <p className="text-sm text-muted-foreground">For students and professionals.</p>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                   
                                 </div>
 
                                 <div className="flex items-center justify-center">
