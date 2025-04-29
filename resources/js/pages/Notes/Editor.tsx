@@ -24,7 +24,9 @@ import {
   AlignJustify,
   Eraser,
   RemoveFormatting,
-  Highlighter
+  Highlighter,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import {
   Dialog,
@@ -177,6 +179,10 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
       }
     );
   };
+
+  const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
+
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
@@ -398,6 +404,7 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Note" />
+
       <div className="relative flex flex-col md:flex-row h-[calc(100vh-6rem)] gap-4 p-4 overflow-hidden">
         {/* Sidebar */}
 
@@ -409,10 +416,11 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
         </Button>
         <div
           className={cn(
-            'md:w-48 w-full md:border-r border-border md:pr-4 mb-4 md:mb-0 transition-all duration-300',
+            'w-full md:w-48 md:border-r border-border md:pr-4 mb-4 md:mb-0 transition-all duration-300 overflow-hidden',
             isSidebarOpen
-              ? 'absolute inset-0 bg-background z-20 p-4 md:relative top-16'
-              : 'md:block hidden'
+              ? 'absolute inset-0 bg-background z-20 p-4 md:relative'
+              : 'hidden md:block',
+            isDesktopSidebarCollapsed && 'md:w-0 md:border-r-0 md:pr-0'
           )}
         >
           <div
@@ -496,42 +504,58 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
         {/* Editor Section */}
         <div className="flex-1 flex flex-col max-h-[calc(100vh-1rem)] space-y-4">
           <div className="flex w-full justify-between items-center">
-            {currentNote && (
-              <span className="text-xs text-muted-foreground">
-                {formatDate(currentNote.updated_at)}
-              </span>
-            )}
-            <div className="flex items-center gap-1">
-              {!isViewer() && (
+
+            <Button
+              onClick={() => setIsDesktopSidebarCollapsed(!isDesktopSidebarCollapsed)}
+              variant="ghost"
+              size="icon"
+              className="hidden md:inline-flex"
+            >
+              {isDesktopSidebarCollapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
+            </Button>
+
+       
+            <div className="flex items-center gap-2">
+              {currentNote && (
+                <span className="text-xs text-muted-foreground">
+                  {formatDate(currentNote.updated_at)}
+                </span>
+              )}
+
+              <div className="flex items-center gap-1">
+                {!isViewer() && (
+                  <Button
+                    onClick={handleNewNote}
+                    variant="secondary"
+                    className="ms-1 flex text-xs h-8"
+                  >
+                    <Plus size={14} className="mr-1" />
+                    New
+                  </Button>
+                )}
+
+                {activeNoteId && !isViewer() && (
+                  <Button onClick={handleDeleteButtonClick} variant="ghost">
+                    <Trash size={10} />
+                  </Button>
+                )}
+
                 <Button
-                  onClick={handleNewNote}
-                  variant="secondary"
-                  className="ms-1 flex text-xs h-8"
+                  onClick={() => handleSave()}
+                  variant="ghost"
+                  disabled={isSaving || isViewer()}
                 >
-                  <Plus size={14} className="mr-1" />
-                  New
+                  <Save size={10} />
                 </Button>
-              )}
-
-              {/* Delete Button */}
-              {activeNoteId && !isViewer() && (
-                <Button onClick={handleDeleteButtonClick} variant="ghost">
-                  <Trash size={10} />
-                </Button>
-              )}
-
-              {/* Save Button */}
-              <Button
-                onClick={() => handleSave()}
-                variant="ghost"
-                disabled={isSaving || isViewer()}
-              >
-                <Save size={10} />
-              </Button>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-between items-center gap-4">
+          <div className="flex justify-between items-center gap-4 px-8 w-full">
             <input
               type="text"
               placeholder="Title"
@@ -540,7 +564,6 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
               className="w-full px-4 py-2 text-2xl font-extrabold bg-transparent text-foreground focus:outline-none md:pt-0 pt-12"
               readOnly={isViewer()}
             />
-
           </div>
           {editor && (
             <BubbleMenu
@@ -586,7 +609,7 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
 
 
 
-                
+
                 <FormatButton
                   onClick={() => editor?.chain().focus().setTextAlign('left').run()}
                   active={editor?.isActive({ textAlign: 'left' })}
@@ -629,7 +652,7 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
           <div className="flex-1 overflow-auto">
             <EditorContent
               editor={editor}
-              className="h-full outline-none ring-0 leading-relaxed px-4 focus:outline-none focus:ring-0 max-w-none"
+              className="h-full outline-none ring-0 leading-loose px-6 max-w-5xl mx-auto focus:outline-none focus:ring-0"
             />
           </div>
         </div>
