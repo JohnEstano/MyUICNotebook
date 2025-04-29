@@ -6,12 +6,13 @@ import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState, ChangeEvent } from 'react';
 import { type BreadcrumbItem } from '@/types';
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import Placeholder from '@tiptap/extension-placeholder'
 import TextStyle from '@tiptap/extension-text-style'
+import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align'
 import {
   Save, Plus, Menu, Image as ImageIcon, Trash, Bold,
@@ -21,6 +22,9 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
+  Eraser,
+  RemoveFormatting,
+  Highlighter
 } from 'lucide-react';
 import {
   Dialog,
@@ -197,13 +201,14 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
       className={cn(
         'h-6 w-6 p-1 rounded-none transition-colors',
         active
-          ? 'bg-black text-white hover:bg-black hover:text-white'
-          : 'hover:bg-gray-200'
+          ? 'bg-secondary text-secondary-foreground hover:bg-secondary'
+          : 'hover:bg-muted'
       )}
     >
       {children}
     </Button>
-  );
+  )
+
 
   const createNewNote = () => {
     setActiveNoteId(null);
@@ -352,19 +357,24 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
     extensions: [
       StarterKit,
       Underline,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Placeholder.configure({ placeholder: 'Start writing your note here...' }),
+      TextStyle,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      Highlight,
+      Placeholder.configure({
+        placeholder: 'Write something amazing...',
+      }),
     ],
     content: data.content,
-    editable: !isViewer(),
     onUpdate: ({ editor }) => {
-      if (!isViewer()) setData('content', editor.getHTML());
+      setData('content', editor.getHTML());
     },
     editorProps: {
       attributes: {
-        class: 'h-full focus:outline-none focus:ring-0 max-w-none prose prose-sm'
-      }
-    }
+        class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none",
+      },
+    },
   });
 
 
@@ -532,57 +542,77 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
             />
 
           </div>
-
-          <div className="flex flex-wrap gap-1 p-1 mt-2">
-            <FormatButton
-              onClick={() => editor?.chain().focus().toggleBold().run()}
-              active={editor?.isActive('bold')}
+          {editor && (
+            <BubbleMenu
+              editor={editor}
+              tippyOptions={{
+                duration: [200, 150],
+                animation: 'shift-away',
+              }}
+              className="rounded-md bg-white border p-1 shadow-md transition-all"
             >
-              <Bold size={16} />
-            </FormatButton>
+              <div className="flex items-center space-x-1 bg-white shadow rounded p-1">
+                <FormatButton
+                  onClick={() => editor.chain().focus().toggleBold().run()}
+                  active={editor.isActive('bold')}
+                >
+                  <Bold size={16} />
+                </FormatButton>
 
-            <FormatButton
-              onClick={() => editor?.chain().focus().toggleItalic().run()}
-              active={editor?.isActive('italic')}
-            >
-              <Italic size={16} />
-            </FormatButton>
+                <FormatButton
+                  onClick={() => editor.chain().focus().toggleItalic().run()}
+                  active={editor.isActive('italic')}
+                >
+                  <Italic size={16} />
+                </FormatButton>
 
-            <FormatButton
-              onClick={() => editor?.chain().focus().toggleUnderline().run()}
-              active={editor?.isActive('underline')}
-            >
-              <UnderlineIcon size={16} />
-            </FormatButton>
+                <FormatButton
+                  onClick={() => editor.chain().focus().toggleUnderline().run()}
+                  active={editor.isActive('underline')}
+                >
+                  <UnderlineIcon size={16} />
+                </FormatButton>
 
-            <FormatButton
-              onClick={() => editor?.chain().focus().setTextAlign('left').run()}
-              active={editor?.isActive({ textAlign: 'left' })}
-            >
-              <AlignLeft size={16} />
-            </FormatButton>
+                <FormatButton
+                  onClick={() => editor?.chain().focus().toggleHighlight().run()}
+                  active={editor?.isActive('highlight')}
+                >
+                  <Highlighter className="w-4 h-4" />
+                </FormatButton>
+                <FormatButton onClick={() => editor?.chain().focus().clearNodes().unsetAllMarks().run()}>
 
-            <FormatButton
-              onClick={() => editor?.chain().focus().setTextAlign('center').run()}
-              active={editor?.isActive({ textAlign: 'center' })}
-            >
-              <AlignCenter size={16} />
-            </FormatButton>
+                  <RemoveFormatting className="h-4 w-4" />
+                </FormatButton>
+                <FormatButton
+                  onClick={() => editor?.chain().focus().setTextAlign('left').run()}
+                  active={editor?.isActive({ textAlign: 'left' })}
+                >
+                  <AlignLeft size={16} />
+                </FormatButton>
 
-            <FormatButton
-              onClick={() => editor?.chain().focus().setTextAlign('right').run()}
-              active={editor?.isActive({ textAlign: 'right' })}
-            >
-              <AlignRight size={16} />
-            </FormatButton>
+                <FormatButton
+                  onClick={() => editor?.chain().focus().setTextAlign('center').run()}
+                  active={editor?.isActive({ textAlign: 'center' })}
+                >
+                  <AlignCenter size={16} />
+                </FormatButton>
 
-            <FormatButton
-              onClick={() => editor?.chain().focus().setTextAlign('justify').run()}
-              active={editor?.isActive({ textAlign: 'justify' })}
-            >
-              <AlignJustify size={16} />
-            </FormatButton>
-          </div>
+                <FormatButton
+                  onClick={() => editor?.chain().focus().setTextAlign('right').run()}
+                  active={editor?.isActive({ textAlign: 'right' })}
+                >
+                  <AlignRight size={16} />
+                </FormatButton>
+
+                <FormatButton
+                  onClick={() => editor?.chain().focus().setTextAlign('justify').run()}
+                  active={editor?.isActive({ textAlign: 'justify' })}
+                >
+                  <AlignJustify size={16} />
+                </FormatButton>
+              </div>
+            </BubbleMenu>
+          )}
 
 
 

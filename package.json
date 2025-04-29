@@ -44,6 +44,7 @@
         "@radix-ui/react-toggle-group": "^1.1.2",
         "@radix-ui/react-tooltip": "^1.1.8",
         "@tailwindcss/vite": "^4.0.6",
+        "@tiptap/extension-highlight": "^2.11.7",
         "@tiptap/extension-placeholder": "^2.11.7",
         "@tiptap/extension-text-align": "^2.11.7",
         "@tiptap/extension-underline": "^2.11.7",
