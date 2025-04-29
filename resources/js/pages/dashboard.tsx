@@ -61,7 +61,9 @@ export default function Dashboard() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
-      <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+
+      {/* 1️⃣ Prevent any horizontal overflow, enforce full width */}
+      <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-hidden w-full max-w-full">
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
           <div>
@@ -70,7 +72,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+        {/* 2️⃣ Explicit single column on small screens */}
+        <div className="grid grid-cols-1 auto-rows-min gap-4 md:grid-cols-3">
           <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
             {note ? (
               <Link
@@ -115,7 +118,10 @@ export default function Dashboard() {
           <div className="flex flex-col gap-4">
             {publicNotes.data.length > 0 ? (
               publicNotes.data.map((pub) => {
-                const date = new Date(pub.modified_at).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
+                const date = new Date(pub.modified_at).toLocaleDateString(undefined, {
+                  month: 'numeric',
+                  day: 'numeric',
+                });
                 return (
                   <Link
                     key={pub.id}
@@ -138,7 +144,7 @@ export default function Dashboard() {
                               by {pub.creator.name}
                             </span>
                           )}
-                          <p className="text-xs text-bold text-muted-foreground">{date}</p>
+                          <p className="text-xs font-bold text-muted-foreground">{date}</p>
                         </div>
                         <CardTitle className="text-sm font-medium truncate mt-2">
                           {pub.title || 'Untitled'}
@@ -164,7 +170,7 @@ export default function Dashboard() {
               <div className="flex-1 text-sm text-muted-foreground">
                 Page {publicNotes.current_page} of {publicNotes.last_page}
               </div>
-              
+
               <div className="flex gap-2">
                 <Button
                   variant="outline"
