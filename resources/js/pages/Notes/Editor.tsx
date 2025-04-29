@@ -585,6 +585,13 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
           </div>
 
 
+
+
+
+
+
+
+
           <div className="flex-1 overflow-auto">
             <EditorContent
               editor={editor}
