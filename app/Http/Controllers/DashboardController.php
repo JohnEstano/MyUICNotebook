@@ -9,7 +9,7 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $latestNote = Note::with(['notebook'])
             ->where('created_by', auth()->id())
@@ -22,31 +22,20 @@ class DashboardController extends Controller
                 'modified_at',
             ]);
 
-        $latestNotebooks = Notebook::where('created_by', auth()->id())
-            ->latest('updated_at')
-            ->take(4)
-            ->get([
-                'id',
-                'title',
-                'description',
-                'updated_at',
-            ]);
-
         $publicNotes = Note::with(['notebook', 'creator'])
             ->whereHas('notebook', fn($q) => $q->where('is_public', true))
             ->latest('modified_at')
-            ->get([
+            ->paginate(10, [
                 'id',
                 'title',
                 'content',
                 'notebook_id',
                 'modified_at',
-                'created_by',        
+                'created_by',
             ]);
 
         return Inertia::render('dashboard', [
             'latestNote'     => $latestNote,
-            'latestNotebooks'=> $latestNotebooks,
             'publicNotes'    => $publicNotes,
         ]);
     }

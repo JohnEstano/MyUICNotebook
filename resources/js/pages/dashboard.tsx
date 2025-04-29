@@ -4,7 +4,8 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage, Link } from '@inertiajs/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Helper function to safely strip any HTML tags
 function stripHtml(html: string) {
@@ -31,11 +32,18 @@ interface Note {
   };
 }
 
+interface PaginatedNotes {
+  data: Note[];
+  links: Array<{ url: string | null; label: string; active: boolean }>;
+  current_page: number;
+  last_page: number;
+}
+
 export default function Dashboard() {
   const { auth, latestNote, publicNotes } = usePage().props as unknown as {
     auth: { user: { name: string } };
     latestNote: Note | null;
-    publicNotes: Note[];
+    publicNotes: PaginatedNotes;
   };
 
   const [note, setNote] = useState<Note | null>(latestNote);
@@ -105,8 +113,8 @@ export default function Dashboard() {
         <div className="mt-8">
           <h3 className="text-xl font-semibold mb-4">Feed</h3>
           <div className="flex flex-col gap-4">
-            {publicNotes.length > 0 ? (
-              publicNotes.map((pub) => {
+            {publicNotes.data.length > 0 ? (
+              publicNotes.data.map((pub) => {
                 const date = new Date(pub.modified_at).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' });
                 return (
                   <Link
@@ -149,6 +157,47 @@ export default function Dashboard() {
               <p className="text-muted-foreground">No public notes available.</p>
             )}
           </div>
+
+          {/* Pagination Controls */}
+          {publicNotes.last_page > 1 && (
+            <div className="mt-6 flex items-center justify-between gap-4">
+              <div className="flex-1 text-sm text-muted-foreground">
+                Page {publicNotes.current_page} of {publicNotes.last_page}
+              </div>
+              
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  disabled={publicNotes.current_page === 1}
+                  asChild
+                >
+                  <Link
+                    href={publicNotes.links[0].url || '#'}
+                    preserveScroll
+                    preserveState
+                  >
+                    <ChevronLeft className="h-4 w-4 mr-2" />
+                    Previous
+                  </Link>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  disabled={publicNotes.current_page === publicNotes.last_page}
+                  asChild
+                >
+                  <Link
+                    href={publicNotes.links[publicNotes.links.length - 1].url || '#'}
+                    preserveScroll
+                    preserveState
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4 ml-2" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
       </div>
