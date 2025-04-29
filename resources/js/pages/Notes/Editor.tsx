@@ -583,6 +583,10 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
 
                   <RemoveFormatting className="h-4 w-4" />
                 </FormatButton>
+
+
+
+                
                 <FormatButton
                   onClick={() => editor?.chain().focus().setTextAlign('left').run()}
                   active={editor?.isActive({ textAlign: 'left' })}
