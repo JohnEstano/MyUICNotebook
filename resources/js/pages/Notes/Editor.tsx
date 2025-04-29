@@ -10,7 +10,18 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Save, Plus, Menu, Image as ImageIcon, Trash } from 'lucide-react';
+import Placeholder from '@tiptap/extension-placeholder'
+import TextStyle from '@tiptap/extension-text-style'
+import TextAlign from '@tiptap/extension-text-align'
+import {
+  Save, Plus, Menu, Image as ImageIcon, Trash, Bold,
+  Italic,
+  Underline as UnderlineIcon,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+} from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -106,7 +117,7 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
 
   const [isLoadingAttachments, setIsLoadingAttachments] = useState(false);
 
-  // Update your attachments useEffect with loading state
+
   useEffect(() => {
     const fetchAttachments = async () => {
       setIsLoadingAttachments(true);
@@ -173,6 +184,27 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
     }).format(date);
   };
 
+  const FormatButton = ({ onClick, active, children }: {
+    onClick: () => void;
+    active?: boolean;
+    children: React.ReactNode;
+  }) => (
+    <Button
+      onMouseDown={e => e.preventDefault()}
+      onClick={onClick}
+      variant="ghost"
+      size="icon"
+      className={cn(
+        'h-6 w-6 p-1 rounded-none transition-colors',
+        active
+          ? 'bg-black text-white hover:bg-black hover:text-white'
+          : 'hover:bg-gray-200'
+      )}
+    >
+      {children}
+    </Button>
+  );
+
   const createNewNote = () => {
     setActiveNoteId(null);
     setCurrentNote(null);
@@ -192,13 +224,13 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
     maybeProceed(() => createNewNote());
   };
 
-  
+
 
   const handleImageClick = (imgUrl: string) => {
     setFullViewImage(imgUrl);
   };
 
-  
+
 
   const handleSave = (onSuccessCallback?: () => void) => {
     if (isViewer()) {
@@ -209,8 +241,8 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
     if (isSaving) return;
     setIsSaving(true);
 
-    const successHandler = (response: any) => { 
-      const serverNote = response.props.note; 
+    const successHandler = (response: any) => {
+      const serverNote = response.props.note;
       const updatedNote = serverNote ?
         { ...serverNote, updated_at: new Date().toISOString() } :
         currentNote;
@@ -286,7 +318,7 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
     }
   };
 
-  
+
   const handleDeleteButtonClick = () => {
     if (!activeNoteId) return;
     setConfirmDeleteDialogOpen(true);
@@ -316,9 +348,26 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
       setConfirmDeleteDialogOpen(false);
     }
   };
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      Placeholder.configure({ placeholder: 'Start writing your note here...' }),
+    ],
+    content: data.content,
+    editable: !isViewer(),
+    onUpdate: ({ editor }) => {
+      if (!isViewer()) setData('content', editor.getHTML());
+    },
+    editorProps: {
+      attributes: {
+        class: 'h-full focus:outline-none focus:ring-0 max-w-none prose prose-sm'
+      }
+    }
+  });
 
 
-  
   const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Notebooks', href: '/notebooks' },
     { title: notebook.title, href: `/notebooks/${notebook.id}` },
@@ -334,7 +383,7 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
     },
   ];
 
-  
+
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -484,15 +533,64 @@ export default function Editor({ notebook, notes, selectedNote, attachments, per
 
           </div>
 
-          <Textarea
-            value={data.content}
-            onChange={(e) => !isViewer() && setData('content', e.target.value)}
-            placeholder="Start writing your note here..."
-            className="h-full max-h-[calc(100vh-150px)] w-full text-base p-4 border-none bg-transparent text-foreground resize-none overflow-auto 
-             focus:outline-none focus:ring-0 focus-visible:ring-0 space-y-4
-             leading-loose" 
-            readOnly={isViewer()}
-          />
+          <div className="flex flex-wrap gap-1 p-1 mt-2">
+            <FormatButton
+              onClick={() => editor?.chain().focus().toggleBold().run()}
+              active={editor?.isActive('bold')}
+            >
+              <Bold size={16} />
+            </FormatButton>
+
+            <FormatButton
+              onClick={() => editor?.chain().focus().toggleItalic().run()}
+              active={editor?.isActive('italic')}
+            >
+              <Italic size={16} />
+            </FormatButton>
+
+            <FormatButton
+              onClick={() => editor?.chain().focus().toggleUnderline().run()}
+              active={editor?.isActive('underline')}
+            >
+              <UnderlineIcon size={16} />
+            </FormatButton>
+
+            <FormatButton
+              onClick={() => editor?.chain().focus().setTextAlign('left').run()}
+              active={editor?.isActive({ textAlign: 'left' })}
+            >
+              <AlignLeft size={16} />
+            </FormatButton>
+
+            <FormatButton
+              onClick={() => editor?.chain().focus().setTextAlign('center').run()}
+              active={editor?.isActive({ textAlign: 'center' })}
+            >
+              <AlignCenter size={16} />
+            </FormatButton>
+
+            <FormatButton
+              onClick={() => editor?.chain().focus().setTextAlign('right').run()}
+              active={editor?.isActive({ textAlign: 'right' })}
+            >
+              <AlignRight size={16} />
+            </FormatButton>
+
+            <FormatButton
+              onClick={() => editor?.chain().focus().setTextAlign('justify').run()}
+              active={editor?.isActive({ textAlign: 'justify' })}
+            >
+              <AlignJustify size={16} />
+            </FormatButton>
+          </div>
+
+
+          <div className="flex-1 overflow-auto">
+            <EditorContent
+              editor={editor}
+              className="h-full outline-none ring-0 leading-relaxed px-4 focus:outline-none focus:ring-0 max-w-none"
+            />
+          </div>
         </div>
 
       </div>

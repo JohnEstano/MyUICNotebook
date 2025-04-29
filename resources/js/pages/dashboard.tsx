@@ -6,6 +6,12 @@ import { Head, usePage, Link } from '@inertiajs/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { ArrowRight } from 'lucide-react';
 
+// Helper function to safely strip any HTML tags
+function stripHtml(html: string) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || "";
+}
+
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Dashboard', href: '/dashboard' },
 ];
@@ -56,9 +62,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-  
         <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4 transition hover:shadow-lg">
+          <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
             {note ? (
               <Link
                 href={`/notebooks/${note.notebook_id}/notes/${note.id}`}
@@ -75,7 +80,9 @@ export default function Dashboard() {
                     </span>
                   )}
                   <h2 className="text-lg font-semibold mb-1">{note.title || 'Untitled'}</h2>
-                  <p className="line-clamp-3 text-sm text-muted-foreground">{note.content}</p>
+                  <p className="line-clamp-3 text-sm text-muted-foreground">
+                    {stripHtml(note.content || 'No content available.')}
+                  </p>
                 </div>
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
@@ -85,9 +92,11 @@ export default function Dashboard() {
               <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
             )}
           </div>
+
           <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
             <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
           </div>
+
           <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
             <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
           </div>
@@ -105,7 +114,7 @@ export default function Dashboard() {
                     href={`/notebooks/${pub.notebook_id}/notes/${pub.id}`}
                     className="block w-full md:w-[70%]"
                   >
-                    <Card className="hover:shadow-lg transition">
+                    <Card>
                       <CardHeader>
                         <div className="flex items-center space-x-2">
                           {pub.notebook && (
@@ -121,16 +130,15 @@ export default function Dashboard() {
                               by {pub.creator.name}
                             </span>
                           )}
-                           <p className="text-xs text-bold text-muted-foreground">{date}</p>
+                          <p className="text-xs text-bold text-muted-foreground">{date}</p>
                         </div>
                         <CardTitle className="text-sm font-medium truncate mt-2">
                           {pub.title || 'Untitled'}
                         </CardTitle>
-                       
                       </CardHeader>
                       <CardContent>
                         <p className="text-sm text-muted-foreground line-clamp-3">
-                          {pub.content}
+                          {stripHtml(pub.content || 'No content available.')}
                         </p>
                       </CardContent>
                     </Card>
@@ -142,6 +150,7 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+
       </div>
     </AppLayout>
   );

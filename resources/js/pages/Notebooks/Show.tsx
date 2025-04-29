@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 
 
 
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -73,6 +74,9 @@ const Show = () => {
 
     return () => clearTimeout(delay);
   }, [searchTerm]);
+
+
+
 
   const handleShare = (user: User, permission: string, notebookId: number) => {
     if (!selectedNotebook) {
@@ -190,7 +194,10 @@ const Show = () => {
 
 
 
-
+  function stripHtml(html: string) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+  }
   return (
     <AppLayout breadcrumbs={[{ title: 'Notebooks', href: '/notebooks' }, { title: notebook.title, href: `/notebooks/${notebook.id}` }]}>
       <Head title={notebook.title} />
@@ -408,7 +415,7 @@ const Show = () => {
                     className="w-full"
                   />
 
-                  {/* Replace the existing color input with this */}
+
                   <div className="space-y-2">
                     <Label htmlFor="color" className="block">Color</Label>
                     <div className="flex flex-wrap gap-3">
@@ -527,14 +534,14 @@ const Show = () => {
                         {note.title || 'Untitled Note'}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="">
+                    <CardContent>
                       <p className="text-sm text-muted-foreground line-clamp-3">
-                        {note.content || 'No content available.'}
+                        {stripHtml(note.content || 'No content available.')}
                       </p>
                     </CardContent>
                   </Card>
-
                 </Link>
+
               ))}
           </div>
         ) : (
