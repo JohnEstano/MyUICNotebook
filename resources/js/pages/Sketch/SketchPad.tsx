@@ -11,7 +11,7 @@ const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Sketch Pad', href: route('sketch') },
 ];
 
-// Define your color options using ShadCN (Tailwind) theme tokens
+
 const colorOptions = [
   { name: 'Primary', value: '#3b82f6', tw: 'bg-primary' },
   { name: 'Secondary', value: '#64748b', tw: 'bg-secondary' },
@@ -55,7 +55,7 @@ export default function SketchPad() {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Sketch Pad" />
       <div className="relative flex-1">
-        {/* Canvas fills the entire space */}
+    
         <div className="absolute inset-0">
           <ReactSketchCanvas
             ref={canvasRef}
@@ -66,9 +66,9 @@ export default function SketchPad() {
             style={{ display: 'block', width: '100%', height: '100%' }}
           />
         </div>
-        {/* Toolbar: Color swatches + actions */}
-        <div className="absolute top-4 right-4 flex items-center space-x-2 p-2 bg-card border border-border rounded-lg shadow">
-          {/* Color picker */}
+
+        <div className="absolute top-4 right-4 flex flex-wrap items-center gap-2 p-3 bg-card border border-border rounded-lg shadow max-w-[90vw]">
+    
           {colorOptions.map(option => (
             <button
               key={option.name}
@@ -77,11 +77,12 @@ export default function SketchPad() {
               aria-label={option.name}
             />
           ))}
-          {/* Action icons */}
-          <Button size="sm" variant="outline" onClick={undo} title="Undo">
+
+  
+          <Button size="icon" variant="outline" onClick={undo} title="Undo" className="w-8 h-8">
             <Undo className="w-4 h-4" />
           </Button>
-          <Button size="sm" variant="outline" onClick={redo} title="Redo">
+          <Button size="icon" variant="outline" onClick={redo} title="Redo" className="w-8 h-8">
             <Redo className="w-4 h-4" />
           </Button>
           <Button size="sm" variant="outline" onClick={clear} title="Clear">
@@ -91,6 +92,7 @@ export default function SketchPad() {
             Download
           </Button>
         </div>
+
       </div>
     </AppLayout>
   );
