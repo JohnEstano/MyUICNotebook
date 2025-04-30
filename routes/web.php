@@ -39,6 +39,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/community', [CommunityController::class, 'store'])->name('community.store');
     
 
+    Route::get('/sketch', fn () => Inertia::render('Sketch/SketchPad'))
+     ->name('sketch');
+
 });
 
 

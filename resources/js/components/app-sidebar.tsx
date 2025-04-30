@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, NotebookPen, Info, Earth, Github} from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, NotebookPen, Info, Earth, Github, Brush, Music4} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -23,17 +23,29 @@ const mainNavItems: NavItem[] = [
         href: '/community',
         icon:Earth ,
     },
+    {
+        title: 'Sketch Pad',
+        href: '/sketch',
+        icon:Brush ,
+    },
+    {
+        title: 'Ambient Music',
+        href: 'https://github.com/JohnEstano/MyUICNotebook',
+        icon:Music4,
+    },
 
   
 ];
 
 const footerNavItems: NavItem[] = [
-
+   
     {
         title: 'Github',
         href: 'https://github.com/JohnEstano/MyUICNotebook',
         icon:Github ,
     },
+   
+
 
 
 ];
