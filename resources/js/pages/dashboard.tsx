@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 // Helper function to safely strip any HTML tags
 function stripHtml(html: string) {
   const doc = new DOMParser().parseFromString(html, 'text/html');
-  return doc.body.textContent || "";
+  return doc.body.textContent || '';
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -60,10 +60,10 @@ export default function Dashboard() {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
+
       <Head title="Dashboard" />
 
-      {/* 1️⃣ Prevent any horizontal overflow, enforce full width */}
-      <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-hidden w-full max-w-full">
+      <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-hidden w-full">
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
           <div>
@@ -72,45 +72,45 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* 2️⃣ Explicit single column on small screens */}
-        <div className="grid grid-cols-1 auto-rows-min gap-4 md:grid-cols-3">
-          <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
-            {note ? (
-              <Link
-                href={`/notebooks/${note.notebook_id}/notes/${note.id}`}
-                className="relative z-10 flex h-full flex-col justify-between group"
-              >
-                <div>
-                  <h2 className="text-sm font-semibold mb-3">Continue writing...</h2>
-                  {note.notebook && (
-                    <span
-                      className="text-xs font-medium text-white/80 px-2 py-1 rounded-md inline-block max-w-max mb-2"
-                      style={{ backgroundColor: note.notebook.color || '#000' }}
-                    >
-                      {note.notebook.title || 'Untitled Notebook'}
-                    </span>
-                  )}
-                  <h2 className="text-lg font-semibold mb-1">{note.title || 'Untitled'}</h2>
-                  <p className="line-clamp-3 text-sm text-muted-foreground">
-                    {stripHtml(note.content || 'No content available.')}
-                  </p>
-                </div>
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
-                </div>
-              </Link>
-            ) : (
-              <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-            )}
-          </div>
-
-          <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-            <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-          </div>
-
-          <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-            <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-          </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {[0, 1, 2].map((idx) => (
+            <div
+              key={idx}
+              className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-square md:aspect-video overflow-hidden rounded-xl border p-4"
+            >
+              {idx === 0 ? (
+                note ? (
+                  <Link
+                    href={`/notebooks/${note.notebook_id}/notes/${note.id}`}
+                    className="relative z-10 flex h-full flex-col justify-between group"
+                  >
+                    <div>
+                      <h2 className="text-sm font-semibold mb-3">Continue writing...</h2>
+                      {note.notebook && (
+                        <span
+                          className="text-xs font-medium text-white/80 px-2 py-1 rounded-md inline-block max-w-max mb-2"
+                          style={{ backgroundColor: note.notebook.color || '#000' }}
+                        >
+                          {note.notebook.title || 'Untitled Notebook'}
+                        </span>
+                      )}
+                      <h2 className="text-lg font-semibold mb-1">{note.title || 'Untitled'}</h2>
+                      <p className="line-clamp-3 text-sm text-muted-foreground">
+                        {stripHtml(note.content || 'No content available.')}
+                      </p>
+                    </div>
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
+                    </div>
+                  </Link>
+                ) : (
+                  <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                )
+              ) : (
+                <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+              )}
+            </div>
+          ))}
         </div>
 
         <div className="mt-8">
@@ -126,7 +126,7 @@ export default function Dashboard() {
                   <Link
                     key={pub.id}
                     href={`/notebooks/${pub.notebook_id}/notes/${pub.id}`}
-                    className="block w-full md:w-[70%]"
+                    className="block w-full"
                   >
                     <Card>
                       <CardHeader>
@@ -164,7 +164,6 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* Pagination Controls */}
           {publicNotes.last_page > 1 && (
             <div className="mt-6 flex items-center justify-between gap-4">
               <div className="flex-1 text-sm text-muted-foreground">
@@ -205,7 +204,6 @@ export default function Dashboard() {
             </div>
           )}
         </div>
-
       </div>
     </AppLayout>
   );
